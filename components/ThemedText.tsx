@@ -10,8 +10,8 @@ export type ThemedTextProps = TextProps & {
 
 export function ThemedText({
   style,
-  lightColor,
-  darkColor,
+  lightColor = '#E0E6ED',
+  darkColor = '#00A7E1',
   type = 'default',
   ...rest
 }: ThemedTextProps) {
@@ -20,7 +20,7 @@ export function ThemedText({
   return (
     <Text
       style={[
-        { color },
+        { color, fontFamily: 'Courier' }, // Monospaced font for a terminal look
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
@@ -47,14 +47,21 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     lineHeight: 32,
+    textShadowColor: '#00FF00', // Green glitchy shadow
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 2,
   },
   subtitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    textShadowColor: '#00FF00',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 2,
   },
   link: {
     lineHeight: 30,
     fontSize: 16,
-    color: '#0a7ea4',
+    color: '#00A7E1',
+    textDecorationLine: 'underline',
   },
 });
