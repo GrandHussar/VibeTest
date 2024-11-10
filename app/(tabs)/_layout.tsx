@@ -5,16 +5,19 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { auth } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
+import { ActivityIndicator, View } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setAuthenticated(!!user); // Set authenticated state based on user presence
+      setAuthenticated(!!user);
+      setLoading(false); // Set loading to false once we know the auth state
     });
     return () => unsubscribe();
   }, []);
@@ -24,10 +27,18 @@ export default function TabLayout() {
     const protectedRoutes = ['/', '/report', '/settings'];
 
     // Redirect to login if the user tries to access a protected route without authentication
-    if (!authenticated && protectedRoutes.includes(pathname)) {
+    if (!loading && !authenticated && protectedRoutes.includes(pathname)) {
       router.replace('/(tabs)/login');
     }
-  }, [authenticated, pathname, router]);
+  }, [authenticated, loading, pathname, router]);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={Colors[colorScheme ?? 'light'].tint} />
+      </View>
+    );
+  }
 
   return (
     <Tabs
